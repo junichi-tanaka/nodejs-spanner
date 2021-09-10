@@ -1023,14 +1023,9 @@ class Table {
   ): void {
     const requestOptions =
       'requestOptions' in options ? options.requestOptions : {};
-    this.database.runTransaction({requestOptions}, (err, transaction) => {
-      if (err) {
-        callback(err);
-        return;
-      }
-
-      transaction![method](this.name, rows as Key[]);
-      transaction!.commit(options, callback);
+    this.database.runTransactionAsync({requestOptions}, async transaction => {
+      await transaction![method](this.name, rows as Key[]);
+      await transaction!.commit(options, callback);
     });
   }
 }
